@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Smack Demo</string>
-    <string name="smack_host">192.168.2.20</string>
+    <string name="smack_host">cainhuang.com</string>
     <string name="smack_port">5222</string>
-    <string name="smack_serviceName">Cains-iMac.local</string>
+    <string name="smack_serviceName">cainhuang.com</string>
     <string name="loginActivity_disconnect_btn_text">DISCONNECT</string>
     <string name="loginActivity_connect_btn_text">CONNECT</string>
 </resources>

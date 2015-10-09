@@ -38,9 +38,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             actionBtn.setText(res.getString(R.string.loginActivity_connect_btn_text));
         }
 
-        handleInput.setText("admin");
-        passwordInput.setText("1002");
-
         actionBtn.setOnClickListener(this);
     }
 
