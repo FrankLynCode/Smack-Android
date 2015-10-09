@@ -1,6 +1,9 @@
 package com.cainhuang.smackxmpp_demo;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
@@ -18,6 +21,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText passwordInput;
     private Button actionBtn;
     private Resources res;
+    private BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +45,44 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+
+                switch (action){
+                    case SmackService.CONNECTED:
+                        actionBtn.setText(res.getString(R.string.loginActivity_disconnect_btn_text));
+                        break;
+                    case SmackService.DISCONNECTED:
+                        actionBtn.setText(res.getString(R.string.loginActivity_connect_btn_text));
+                        break;
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SmackService.CONNECTED);
+        filter.addAction(SmackService.DISCONNECTED);
+        this.registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.unregisterReceiver(receiver);
+    }
+
+    @Override
     public void onClick(View v) {
         Intent intent = new Intent(this, SmackService.class);
 
         if(SmackService.connected()){
-            actionBtn.setText(res.getString(R.string.loginActivity_disconnect_btn_text));
             this.stopService(intent);
         } else {
-            actionBtn.setText(res.getString(R.string.loginActivity_connect_btn_text));
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             prefs.edit()
                     .putString("username", handleInput.getText().toString())

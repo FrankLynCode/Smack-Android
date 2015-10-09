@@ -12,6 +12,10 @@ import org.jivesoftware.smack.XMPPException;
 import java.io.IOException;
 
 public class SmackService extends Service {
+
+    public static final String CONNECTED = "com.cainhuang.smackxmpp_demo.smackservice.connected";
+    public static final String DISCONNECTED = "com.cainhuang.smackxmpp_demo.smackservice.disconnected";
+
     private boolean mActive;
     private Thread mThread;
     private Handler mTHandler;

@@ -1,6 +1,7 @@
 package com.cainhuang.smackxmpp_demo.service;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
@@ -20,9 +21,11 @@ import java.io.IOException;
 public class SmackConnection implements ConnectionListener {
 
     public static String TAG = "SmackConnection";
+
     public enum ConnectionState {
         CONNECTED, CONNECTING, RECONNECTING, DISCONNECTED
     }
+
     public static ConnectionState state = ConnectionState.DISCONNECTED;
 
     private Integer port;
@@ -31,8 +34,10 @@ public class SmackConnection implements ConnectionListener {
     private String username;
     private String password;
     private XMPPTCPConnection xmppConnection;
+    private Context context;
 
     public SmackConnection(Context ctx) {
+        context = ctx;
         Resources res = ctx.getResources();
         SharedPreferences sp = PreferenceManager
                 .getDefaultSharedPreferences(ctx.getApplicationContext());
@@ -83,12 +88,22 @@ public class SmackConnection implements ConnectionListener {
     public void authenticated(XMPPConnection connection, boolean resumed) {
         Log.i(TAG, "authenticated()");
         SmackConnection.state = ConnectionState.CONNECTED;
+
+        Intent intent = new Intent(SmackService.CONNECTED);
+        intent.setPackage(context.getPackageName());
+        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        context.sendBroadcast(intent);
     }
 
     @Override
     public void connectionClosed() {
         Log.i(TAG, "connectionClosed()");
         SmackConnection.state = ConnectionState.DISCONNECTED;
+
+        Intent intent = new Intent(SmackService.DISCONNECTED);
+        intent.setPackage(context.getPackageName());
+        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        context.sendBroadcast(intent);
     }
 
     @Override
